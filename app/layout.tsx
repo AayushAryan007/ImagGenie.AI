@@ -22,19 +22,16 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    // <ClerkProvider
-    //   appearance={{
-    //     variables: { colorPrimary: "#624cf5" },
-    //   }}
-    // >
-    <html lang="en">
-      <head>
-        <link rel="icon" href="/favicon.ico" /> {/* Add the favicon here */}
-      </head>
-      <body className={cn("font-IBMPlex antialiased", IBMPlex.variable)}>
-        {children}
-      </body>
-    </html>
-    // </ClerkProvider>
+    <ClerkProvider
+      appearance={{
+        variables: { colorPrimary: "#624cf5" },
+      }}
+    >
+      <html lang="en">
+        <body className={cn("font-IBMPlex antialiased", IBMPlex.variable)}>
+          {children}
+        </body>
+      </html>
+    </ClerkProvider>
   );
 }
