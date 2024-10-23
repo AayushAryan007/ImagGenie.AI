@@ -6,7 +6,6 @@ interface MongooseConnection {
 
 const connection: MongooseConnection = {};
 
-// Establish connection to MongoDB
 export async function connectToDatabase(): Promise<Connection | null> {
   if (connection.isConnected) {
     // If already connected, return the existing connection
