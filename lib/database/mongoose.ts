@@ -1,34 +1,25 @@
-import mongoose, { Mongoose } from "mongoose";
-
-const MONGODB_URL = process.env.MONGODB_URL;
+import mongoose, { Connection } from "mongoose";
 
 interface MongooseConnection {
-  conn: Mongoose | null;
-  promise: Promise<Mongoose> | null;
+  isConnected?: number;
 }
 
-let cached: MongooseConnection = (global as any).mongoose;
+const connection: MongooseConnection = {};
 
-if (!cached) {
-  cached = (global as any).mongoose = {
-    conn: null,
-    promise: null,
-  };
+// Establish connection to MongoDB
+export async function connectToDatabase(): Promise<Connection | null> {
+  if (connection.isConnected) {
+    // If already connected, return the existing connection
+    return mongoose.connection;
+  }
+
+  try {
+    const db = await mongoose.connect(process.env.MONGODB_URI as string);
+
+    connection.isConnected = db.connections[0].readyState;
+    return db.connection;
+  } catch (error) {
+    console.error("Error connecting to database", error);
+    return null;
+  }
 }
-
-export const connectToDatabase = async () => {
-  if (cached.conn) return cached.conn;
-
-  if (!MONGODB_URL) throw new Error("Missing MONGODB_URL");
-
-  cached.promise =
-    cached.promise ||
-    mongoose.connect(MONGODB_URL, {
-      dbName: "ImagGenie.AI",
-      bufferCommands: false,
-    });
-
-  cached.conn = await cached.promise;
-
-  return cached.conn;
-};
